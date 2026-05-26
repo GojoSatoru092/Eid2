@@ -1,357 +1,173 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Eid Mubarak ❤️</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --gold: #c9a84c;
-      --gold-light: #e8c97a;
-      --gold-pale: rgba(201,168,76,0.15);
-      --rose: #c97c8a;
-      --cream: #f5ede0;
-      --deep: #0d0608;
-      --text-muted: rgba(245,237,224,0.55);
-      --slide-dur: 0.7s;
-    }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body { height: 100%; background: var(--deep); color: var(--cream); font-family: 'Jost', sans-serif; overflow: hidden; }
-
-    #stars { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
-    #ambient { position: fixed; inset: 0; z-index: 0; transition: background 1.2s ease; pointer-events: none; }
-
-    .crescent {
-      position: fixed; top: -60px; right: -60px;
-      width: 260px; height: 260px; border-radius: 50%;
-      box-shadow: inset -55px 10px 0 0 var(--gold);
-      opacity: 0.12; z-index: 1; pointer-events: none;
-      animation: floatCrescent 8s ease-in-out infinite;
-    }
-    @keyframes floatCrescent {
-      0%, 100% { transform: translateY(0px) rotate(-10deg); }
-      50% { transform: translateY(18px) rotate(-10deg); }
-    }
-
-    .orb { position: fixed; border-radius: 50%; filter: blur(80px); pointer-events: none; z-index: 0; opacity: 0; transition: opacity 1.2s ease, background 1.2s ease; }
-    .orb-1 { width: 400px; height: 400px; bottom: -100px; left: -80px; }
-    .orb-2 { width: 300px; height: 300px; top: 10%; right: -60px; }
-
-    /* ── Nav ── */
-    nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 10;
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 24px 48px;
-    }
-    .brand { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 300; letter-spacing: 4px; color: var(--gold-light); text-transform: uppercase; opacity: 0.9; }
-    .nav-right { display: flex; align-items: center; gap: 20px; }
-
-    /* ── Language Toggle ── */
-    .lang-toggle {
-      display: flex;
-      border: 1px solid rgba(201,168,76,0.35);
-      border-radius: 20px;
-      overflow: hidden;
-    }
-    .lang-btn {
-      font-family: 'Jost', sans-serif;
-      font-size: 10px; font-weight: 500;
-      letter-spacing: 1.5px; text-transform: uppercase;
-      padding: 6px 14px;
-      border: none; background: transparent;
-      color: var(--text-muted);
-      cursor: pointer; transition: all 0.3s ease;
-    }
-    .lang-btn.active { background: var(--gold); color: var(--deep); }
-
-    /* ── Dots ── */
-    .dots { display: flex; gap: 10px; align-items: center; }
-    .dot { width: 8px; height: 8px; border-radius: 50%; border: 1.5px solid var(--gold); background: transparent; cursor: pointer; transition: all 0.4s ease; opacity: 0.5; }
-    .dot.active { background: var(--gold); opacity: 1; transform: scale(1.3); }
-
-    /* ── Scene ── */
-    .scene { position: relative; z-index: 5; height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 0 max(48px, 8vw); }
-
-    /* ── Slide ── */
-    .slide { display: none; animation: slideIn var(--slide-dur) cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-    .slide.active { display: block; }
-    .slide.exit { display: block; animation: slideOut var(--slide-dur) cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-    @keyframes slideIn { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
-    @keyframes slideOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-30px); } }
-
-    .slide-label { font-size: 11px; font-weight: 500; letter-spacing: 5px; text-transform: uppercase; color: var(--gold); margin-bottom: 20px; opacity: 0; animation: fadeUp 0.6s 0.15s ease forwards; }
-    .slide-number { display: inline-block; width: 24px; height: 24px; border: 1px solid var(--gold); border-radius: 50%; text-align: center; line-height: 24px; font-size: 10px; margin-right: 12px; vertical-align: middle; }
-
-    h2.slide-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(42px, 6.5vw, 82px); font-weight: 300; line-height: 1.05; margin-bottom: 26px; color: var(--cream); opacity: 0; animation: fadeUp 0.7s 0.25s ease forwards; }
-    h2.slide-title em { font-style: italic; color: var(--gold-light); }
-
-    .divider { width: 60px; height: 1px; background: linear-gradient(to right, var(--gold), transparent); margin-bottom: 22px; opacity: 0; animation: fadeUp 0.6s 0.35s ease forwards; }
-
-    .slide-body { font-family: 'Cormorant Garamond', serif; font-size: clamp(17px, 2vw, 22px); font-weight: 300; font-style: italic; line-height: 1.9; color: rgba(245,237,224,0.82); max-width: 640px; opacity: 0; animation: fadeUp 0.7s 0.45s ease forwards; }
-    .slide-body strong { font-style: normal; font-weight: 600; color: var(--cream); }
-
-    .signature { margin-top: 32px; font-family: 'Cormorant Garamond', serif; font-size: 26px; font-style: italic; color: var(--gold-light); opacity: 0; animation: fadeUp 0.7s 0.65s ease forwards; }
-
-    /* ── Letter slide ── */
-    .letter-wrap { max-width: 680px; opacity: 0; animation: fadeUp 0.8s 0.35s ease forwards; }
-    .letter-salutation { font-family: 'Cormorant Garamond', serif; font-size: clamp(15px, 1.7vw, 19px); font-style: italic; color: var(--gold-light); margin-bottom: 14px; }
-    .letter-body { font-family: 'Cormorant Garamond', serif; font-size: clamp(14px, 1.55vw, 18px); font-weight: 300; line-height: 2; color: rgba(245,237,224,0.83); }
-    .letter-body p { margin-bottom: 12px; }
-    .letter-closing { margin-top: 18px; font-family: 'Cormorant Garamond', serif; font-size: clamp(16px, 1.8vw, 20px); font-style: italic; color: var(--gold-light); }
-    .letter-closing span { display: block; font-size: clamp(20px, 2.2vw, 26px); font-style: normal; margin-top: 4px; color: var(--cream); }
-
-    /* ── Scroll hint on letter ── */
-    .scroll-hint { margin-top: 10px; font-size: 11px; letter-spacing: 2px; color: rgba(201,168,76,0.4); text-transform: uppercase; font-family: 'Jost', sans-serif; }
-
-    /* ── Letter scroll container ── */
-    .letter-scroll {
-      max-height: 52vh;
-      overflow-y: auto;
-      padding-right: 8px;
-      scrollbar-width: thin;
-      scrollbar-color: rgba(201,168,76,0.3) transparent;
-    }
-    .letter-scroll::-webkit-scrollbar { width: 3px; }
-    .letter-scroll::-webkit-scrollbar-track { background: transparent; }
-    .letter-scroll::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.35); border-radius: 2px; }
-
-    /* ── Controls ── */
-    .controls { position: fixed; bottom: 48px; left: 0; right: 0; display: flex; justify-content: center; gap: 16px; z-index: 10; }
-    .btn { font-family: 'Jost', sans-serif; font-size: 13px; font-weight: 400; letter-spacing: 2px; text-transform: uppercase; padding: 14px 32px; border-radius: 2px; border: none; cursor: pointer; transition: all 0.3s ease; }
-    .btn-ghost { background: transparent; color: var(--text-muted); border: 1px solid rgba(201,168,76,0.25); }
-    .btn-ghost:hover { border-color: var(--gold); color: var(--gold-light); background: var(--gold-pale); }
-    .btn-primary { background: var(--gold); color: var(--deep); font-weight: 500; }
-    .btn-primary:hover { background: var(--gold-light); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(201,168,76,0.3); }
-
-    /* ── Petals ── */
-    .petal { position: fixed; border-radius: 50% 50% 50% 0; opacity: 0; pointer-events: none; z-index: 2; animation: petalFall linear infinite; }
-    @keyframes petalFall {
-      0%   { opacity: 0; transform: translateY(-20px) rotate(0deg); }
-      10%  { opacity: 0.35; }
-      90%  { opacity: 0.12; }
-      100% { opacity: 0; transform: translateY(110vh) rotate(720deg); }
-    }
-    @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-
-    footer { position: fixed; bottom: 16px; left: 0; right: 0; text-align: center; font-size: 11px; letter-spacing: 2px; color: rgba(245,237,224,0.2); z-index: 10; text-transform: uppercase; }
-    .progress-bar { position: fixed; bottom: 0; left: 0; height: 2px; background: linear-gradient(to right, var(--gold), var(--rose)); transition: width 0.7s cubic-bezier(0.16,1,0.3,1); z-index: 20; }
-
-    @media (max-width: 700px) {
-      html, body { overflow: hidden; }
-      nav { padding: 14px 18px; }
-      .brand { font-size: 13px; letter-spacing: 2px; }
-      .lang-btn { padding: 5px 10px; font-size: 9px; }
-      .scene { padding: 0 20px; padding-top: 72px; justify-content: center; }
-      .controls { bottom: 30px; gap: 10px; }
-      .btn { padding: 11px 18px; font-size: 11px; }
-      .slide-body { font-size: 17px; }
-      h2.slide-title { font-size: clamp(32px, 10vw, 50px); }
-      .letter-body { font-size: 15px; }
-      .letter-scroll { max-height: 48vh; }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#0d0608">
+<title>Eid Mubarak</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden;background:#0d0608;color:#f5ede0;font-family:Georgia,serif}
+canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0}
+.g1{position:fixed;width:300px;height:300px;top:-80px;left:-80px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,.13),transparent 70%);pointer-events:none;z-index:0}
+.g2{position:fixed;width:250px;height:250px;bottom:-60px;right:-60px;border-radius:50%;background:radial-gradient(circle,rgba(122,59,78,.16),transparent 70%);pointer-events:none;z-index:0}
+#pb{position:fixed;top:0;left:0;height:2px;background:linear-gradient(to right,#c9a84c,#e8c97a);z-index:300;transition:width .5s ease;width:0}
+nav{position:fixed;top:2px;left:0;right:0;z-index:200;display:flex;justify-content:space-between;align-items:center;padding:12px 18px;background:rgba(13,6,8,.93);border-bottom:1px solid rgba(201,168,76,.2)}
+.brand{color:#c9a84c;font-size:10px;letter-spacing:3px}
+.nav-r{display:flex;align-items:center;gap:12px}
+.ltog{display:flex;border:1px solid rgba(201,168,76,.35);border-radius:20px;overflow:hidden}
+.lb{background:transparent;color:rgba(245,237,224,.45);border:none;padding:5px 13px;font-size:10px;letter-spacing:1px;cursor:pointer;font-family:Arial,sans-serif}
+.lb.on{background:#c9a84c;color:#0d0608;font-weight:700}
+.dots{display:flex;gap:7px;align-items:center}
+.dot{width:7px;height:7px;border-radius:50%;border:1.5px solid #c9a84c;background:transparent;cursor:pointer;opacity:.4;transition:all .3s;padding:0;outline:none;-webkit-appearance:none}
+.dot.on{background:#c9a84c;opacity:1;transform:scale(1.4)}
+#wrap{position:fixed;top:54px;left:0;right:0;bottom:72px;overflow-y:auto;-webkit-overflow-scrolling:touch;z-index:1;padding:28px 20px 20px}
+.slide{animation:sup .5s cubic-bezier(.22,1,.36,1) both}
+@keyframes sup{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+.orn{display:flex;align-items:center;gap:10px;margin-bottom:18px;animation:fi .5s .1s both}
+@keyframes fi{from{opacity:0}to{opacity:1}}
+.ol{flex:1;height:1px;background:linear-gradient(to right,transparent,rgba(201,168,76,.3))}
+.or{flex:1;height:1px;background:linear-gradient(to left,transparent,rgba(201,168,76,.3))}
+.oi{color:#c9a84c;font-size:12px;animation:sh 3s infinite ease-in-out}
+@keyframes sh{0%,100%{opacity:.5}50%{opacity:1}}
+.lbl{font-family:Arial,sans-serif;font-size:8px;letter-spacing:4px;text-transform:uppercase;color:#c9a84c;margin-bottom:12px;display:flex;align-items:center;gap:8px;animation:fi .5s .1s both}
+.snum{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border:1px solid #c9a84c;border-radius:50%;font-size:7px;color:#c9a84c;flex-shrink:0}
+h2{font-size:clamp(30px,10vw,50px);font-weight:300;line-height:1.1;margin-bottom:16px;color:#f5ede0;animation:sup .55s .15s cubic-bezier(.22,1,.36,1) both}
+h2 em{font-style:italic;color:#e8c97a}
+.div{height:1px;background:#c9a84c;margin-bottom:20px;opacity:.55;width:0;animation:dg .7s .3s ease both}
+@keyframes dg{from{width:0}to{width:50px}}
+.frame{position:relative;padding:22px 18px;border:1px solid rgba(201,168,76,.14);border-radius:2px;background:linear-gradient(135deg,rgba(201,168,76,.04),transparent 60%)}
+.frame::before,.frame::after{content:'';position:absolute;width:13px;height:13px;border-color:#c9a84c;border-style:solid;opacity:.4}
+.frame::before{top:6px;left:6px;border-width:1px 0 0 1px}
+.frame::after{bottom:6px;right:6px;border-width:0 1px 1px 0}
+.body{font-size:clamp(15px,4.5vw,18px);font-style:italic;line-height:2;color:rgba(245,237,224,.82);animation:fi .7s .35s both}
+.sig{margin-top:24px;font-size:16px;font-style:italic;color:#e8c97a;animation:fi .7s .5s both}
+.sal{font-size:13px;font-style:italic;color:#e8c97a;margin-bottom:14px;animation:fi .5s .3s both}
+.lbody{font-size:clamp(13px,4vw,15px);font-style:italic;line-height:2.1;color:rgba(245,237,224,.82);animation:fi .7s .35s both}
+.lbody p{margin-bottom:12px}
+.lclos{margin-top:14px;font-size:13px;font-style:italic;color:#e8c97a;animation:fi .7s .55s both}
+.lclos span{display:block;font-size:17px;font-style:normal;margin-top:4px}
+.hint{text-align:center;padding-top:18px;font-family:Arial,sans-serif;font-size:8px;letter-spacing:2px;color:rgba(201,168,76,.35);text-transform:uppercase;animation:fi 1s 1.5s both}
+.ctrl{position:fixed;bottom:0;left:0;right:0;z-index:200;display:flex;justify-content:center;gap:10px;padding:12px 18px 20px;background:linear-gradient(to top,rgba(13,6,8,.98) 60%,transparent)}
+.btn{font-family:Arial,sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:12px 20px;border:none;cursor:pointer;border-radius:2px;min-width:110px;text-align:center;-webkit-appearance:none;appearance:none}
+.bg{background:transparent;color:rgba(245,237,224,.45);border:1px solid rgba(201,168,76,.25)}
+.bp{background:#c9a84c;color:#0d0608;font-weight:700}
+.bg:active{background:rgba(201,168,76,.1);transform:scale(.97)}
+.bp:active{background:#e8c97a;transform:scale(.97)}
+.ripple{position:fixed;border-radius:50%;pointer-events:none;z-index:50;background:rgba(201,168,76,.2);animation:rip .5s ease-out both}
+@keyframes rip{from{transform:scale(0);opacity:.8}to{transform:scale(4);opacity:0}}
+</style>
 </head>
 <body>
-
-<canvas id="stars"></canvas>
-<div id="ambient"></div>
-<div class="crescent"></div>
-<div class="orb orb-1" id="orb1"></div>
-<div class="orb orb-2" id="orb2"></div>
-
+<canvas id="c"></canvas>
+<div class="g1"></div><div class="g2"></div>
+<div id="pb"></div>
 <nav>
-  <div class="brand">Eid For You ✦</div>
-  <div class="nav-right">
-    <div class="lang-toggle">
-      <button class="lang-btn active" id="btnID" onclick="setLang('id')">ID</button>
-      <button class="lang-btn" id="btnEN" onclick="setLang('en')">EN</button>
+  <div class="brand">EID FOR YOU &#10022;</div>
+  <div class="nav-r">
+    <div class="ltog">
+      <button class="lb on" id="bID" onclick="setLang('id')">ID</button>
+      <button class="lb" id="bEN" onclick="setLang('en')">EN</button>
     </div>
     <div class="dots" id="dots"></div>
   </div>
 </nav>
-
-<div class="scene">
-  <div id="slideContainer"></div>
+<div id="wrap"><div id="scene"></div></div>
+<div class="ctrl">
+  <button class="btn bg" id="pb2" onclick="prev()">&#8592; Sebelumnya</button>
+  <button class="btn bp" id="nb" onclick="next()">Berikutnya &#8594;</button>
 </div>
-
-<div class="controls">
-  <button class="btn btn-ghost" onclick="prevSlide()" id="prevBtn">← Sebelumnya</button>
-  <button class="btn btn-primary" onclick="nextSlide()" id="nextBtn">Berikutnya →</button>
-</div>
-
-<div class="progress-bar" id="progressBar"></div>
-<footer id="footer">Dibuat dengan perasaan yang tulus · Eid 2025 🌙</footer>
-
 <script>
-  // ══════════════════════════════════════════
-  //  SLIDE DATA — bilingual
-  // ══════════════════════════════════════════
-  const slidesData = [
-    {
-      ambientLeft:"rgba(90,40,60,0.55)", ambientRight:"rgba(13,6,8,0)",
-      orb1:"rgba(160,80,100,0.45)", orb2:"rgba(100,60,40,0.3)",
-      id:{
-        label:"01 · Eid Mubarak", title:"<em>Eid</em> Mubarak",
-        body:"Di Hari Raya yang istimewa ini, aku hanya ingin mengingatkanmu betapa berartinya kehadiranmu untukku. Bahkan momen-momen kecil bersamamu terasa begitu bermakna — seperti keajaiban sunyi yang selalu tinggal di hati.",
-        signature:null, isLetter:false
-      },
-      en:{
-        label:"01 · Eid Mubarak", title:"<em>Eid</em> Mubarak",
-        body:"This Eid, I just wanted to remind you how special your presence is to me. Even the smallest moments with you feel meaningful — like quiet magic that always stays.",
-        signature:null, isLetter:false
-      }
-    },
-    {
-      ambientLeft:"rgba(50,30,70,0.6)", ambientRight:"rgba(13,6,8,0)",
-      orb1:"rgba(100,60,140,0.4)", orb2:"rgba(130,80,80,0.3)",
-      id:{
-        label:"02 · Hal Kecil", title:"Hal Kecil yang <em>Berarti</em>",
-        body:"Kamu mungkin tidak menyadarinya, tapi kepedulianmu, usahamu, dan bahkan gestur-gestur kecilmu diam-diam tinggal di hatiku untuk waktu yang sangat lama. Semua itu berarti lebih dari yang bisa kamu bayangkan.",
-        signature:null, isLetter:false
-      },
-      en:{
-        label:"02 · Little Things", title:"Little <em>Things</em> Matter",
-        body:"You may not realise it, but your care, your effort, and even your smallest gestures live quietly in my heart for a very long time. They mean more than you could ever imagine.",
-        signature:null, isLetter:false
-      }
-    },
-    {
-      ambientLeft:"rgba(40,50,70,0.55)", ambientRight:"rgba(13,6,8,0)",
-      orb1:"rgba(70,100,160,0.35)", orb2:"rgba(80,60,120,0.3)",
-      id:{
-        label:"03 · Bersamamu", title:"Setiap <em>Saat</em> Bersamamu",
-        body:"Ada sesuatu yang berbeda ketika kamu ada di sekitarku. Dunia terasa lebih hangat, lebih ringan. Tawamu mengisi ruangan dengan cara yang tidak bisa digantikan oleh siapapun. Aku bersyukur setiap harinya.",
-        signature:null, isLetter:false
-      },
-      en:{
-        label:"03 · Together", title:"Every <em>Moment</em> with You",
-        body:"There is something different when you are around. The world feels warmer, lighter. Your laughter fills the room in a way no one else could. I am grateful for it every single day.",
-        signature:null, isLetter:false
-      }
-    },
-    {
-      ambientLeft:"rgba(60,30,30,0.55)", ambientRight:"rgba(13,6,8,0)",
-      orb1:"rgba(180,100,60,0.35)", orb2:"rgba(100,50,80,0.3)",
-      id:{
-        label:"04 · Hadiah Kecil", title:"Sebuah <em>Hadiah</em> Kecil",
-        body:"Aku membuat website kecil ini karena kata-kata di chat kadang tidak cukup untuk mengungkapkan betapa berharganya seseorang bagimu. Jadi aku ingin mencoba sedikit lebih keras — untukmu.",
-        signature:null, isLetter:false
-      },
-      en:{
-        label:"04 · A Small Gift", title:"A Small <em>Gift</em>",
-        body:"I made this little website because words in chats sometimes cannot fully express how much someone means to you. So I wanted to try a little harder — for you.",
-        signature:null, isLetter:false
-      }
-    },
-    {
-      ambientLeft:"rgba(80,50,20,0.55)", ambientRight:"rgba(13,6,8,0)",
-      orb1:"rgba(201,168,76,0.3)", orb2:"rgba(150,80,100,0.3)",
-      id:{
-        label:"05 · Selalu Ada", title:"Selalu <em>Ada</em>",
-        body:"Tidak peduli seberapa sibuknya hidup, aku sungguh berharap kamu selalu bahagia, terlindungi, dan tersenyum. Karena senyummu adalah salah satu hal paling indah yang pernah aku kenal — dan aku tidak mau melewatkan satu pun.",
-        signature:"Terima kasih sudah ada di hidupku. ✦", isLetter:false
-      },
-      en:{
-        label:"05 · Always There", title:"Always <em>There</em>",
-        body:"No matter how busy life gets, I genuinely hope you always stay happy, protected, and smiling. Because your smile is one of the most beautiful things I have ever known — and I never want to miss a single one.",
-        signature:"Thank you for existing in my life. ✦", isLetter:false
-      }
-    },
-    {
-      ambientLeft:"rgba(60,25,55,0.7)", ambientRight:"rgba(20,8,15,0.35)",
-      orb1:"rgba(160,80,130,0.5)", orb2:"rgba(201,168,76,0.32)",
-      id:{
-        label:"06 · Surat Untukmu", title:"Eid <em>Mubarak,</em> Sayang",
-        isLetter:true,
-        salutation:"Untuk kamu yang selalu ada di pikiranku,",
-        letterBody:[
-          "Setiap kali Lebaran tiba, selalu ada satu hal yang membuatku lebih bersyukur dari tahun sebelumnya — kehadiranmu. Bukan karena sesuatu yang besar atau dramatis, tapi justru karena hal-hal kecil yang mungkin kamu sendiri tidak sadari.",
-          "Cara kamu memperhatikan, bahkan ketika kamu pikir tidak ada yang melihat. Cara kamu mendengarkan dengan sungguh-sungguh, bukan sekadar mendengar. Cara kamu tetap ada bahkan di hari-hari yang terasa berat — bukan dengan kata-kata besar, tapi hanya dengan kehadiranmu yang hangat. Semua itu menetap di hatiku, jauh lebih dalam dari yang bisa aku ungkapkan.",
-          "Aku tidak selalu pandai mengatakannya. Tapi di hari yang istimewa ini, aku ingin kamu tahu: kamu bukan sekadar orang yang aku sayangi. Kamu adalah alasan hari-hariku terasa lebih berwarna, lebih berarti. Kamu adalah hal yang aku syukuri dalam doa-doa tersunyiku.",
-          "Eid ini, aku tidak punya hadiah mewah. Yang aku punya hanya rasa ini — rasa syukur yang tulus, kasih sayang yang nyata, dan doa yang sungguh-sungguh agar kamu selalu dilindungi, selalu bahagia, dan selalu tahu bahwa kamu dicintai dengan sepenuh hati.",
-          "Selamat Hari Raya, sayang. Semoga setiap langkahmu selalu dipenuhi cahaya — dan semoga kamu tahu, dalam setiap langkah itu, aku selalu mendoakanmu."
-        ],
-        closingLine:"Dengan segenap cinta dan ketulusan,",
-        closingName:"Selalu untukmu 🌙"
-      },
-      en:{
-        label:"06 · A Letter for You", title:"Eid <em>Mubarak,</em> Sayang",
-        isLetter:true,
-        salutation:"To you, who is always on my mind,",
-        letterBody:[
-          "Every time Eid arrives, there is one thing that makes me more grateful than the year before — your presence. Not because of anything grand or dramatic, but because of the small things you might not even notice yourself.",
-          "The way you pay attention, even when you think no one is watching. The way you truly listen, not just hear. The way you stay even on the heavy days — not with grand words, but simply with your warm presence. All of it settles in my heart, far deeper than words could ever reach.",
-          "I am not always good at saying it. But on this special day, I want you to know: you are not just someone I care for. You are the reason my days feel more vivid, more meaningful. You are something I am grateful for in my quietest prayers.",
-          "This Eid, I have no grand gift to offer. What I have is this feeling — a sincere gratitude, a real love, and a genuine prayer that you are always protected, always happy, and always know that you are loved wholeheartedly.",
-          "Happy Eid, sayang. May every step you take be filled with light — and may you always know that in every one of those steps, I am always praying for you."
-        ],
-        closingLine:"With all my love and sincerity,",
-        closingName:"Always yours 🌙"
-      }
-    }
-  ];
+var lang='id',cur=0;
+var S=[
+  {id:{lbl:'01 · Eid Mubarak',ttl:'<em>Eid</em> Mubarak',txt:'Di Hari Raya yang istimewa ini, aku hanya ingin mengingatkanmu betapa berartinya kehadiranmu untukku. Bahkan momen-momen kecil bersamamu terasa begitu bermakna \u2014 seperti keajaiban sunyi yang selalu tinggal di hati.',sig:null,let:false},
+   en:{lbl:'01 · Eid Mubarak',ttl:'<em>Eid</em> Mubarak',txt:'This Eid, I just wanted to remind you how special your presence is to me. Even the smallest moments with you feel meaningful \u2014 like quiet magic that always stays.',sig:null,let:false}},
+  {id:{lbl:'02 · Hal Kecil',ttl:'Hal Kecil yang <em>Berarti</em>',txt:'Kamu mungkin tidak menyadarinya, tapi kepedulianmu, usahamu, dan bahkan gestur-gestur kecilmu diam-diam tinggal di hatiku untuk waktu yang sangat lama. Semua itu berarti lebih dari yang bisa kamu bayangkan.',sig:null,let:false},
+   en:{lbl:'02 · Little Things',ttl:'Little <em>Things</em> Matter',txt:'You may not realise it, but your care, your effort, and even your smallest gestures live quietly in my heart for a very long time. They mean more than you could ever imagine.',sig:null,let:false}},
+  {id:{lbl:'03 · Bersamamu',ttl:'Setiap <em>Saat</em> Bersamamu',txt:'Ada sesuatu yang berbeda ketika kamu ada di sekitarku. Dunia terasa lebih hangat, lebih ringan. Tawamu mengisi ruangan dengan cara yang tidak bisa digantikan oleh siapapun. Aku bersyukur setiap harinya.',sig:null,let:false},
+   en:{lbl:'03 · Together',ttl:'Every <em>Moment</em> with You',txt:'There is something different when you are around. The world feels warmer, lighter. Your laughter fills the room in a way no one else could. I am grateful for it every single day.',sig:null,let:false}},
+  {id:{lbl:'04 · Hadiah Kecil',ttl:'Sebuah <em>Hadiah</em> Kecil',txt:'Aku membuat website kecil ini karena kata-kata di chat kadang tidak cukup untuk mengungkapkan betapa berharganya seseorang bagimu. Jadi aku ingin mencoba sedikit lebih keras \u2014 untukmu.',sig:null,let:false},
+   en:{lbl:'04 · A Small Gift',ttl:'A Small <em>Gift</em>',txt:'I made this little website because words in chats sometimes cannot fully express how much someone means to you. So I wanted to try a little harder \u2014 for you.',sig:null,let:false}},
+  {id:{lbl:'05 · Selalu Ada',ttl:'Selalu <em>Ada</em>',txt:'Tidak peduli seberapa sibuknya hidup, aku sungguh berharap kamu selalu bahagia, terlindungi, dan tersenyum. Karena senyummu adalah salah satu hal paling indah yang pernah aku kenal.',sig:'Terima kasih sudah ada di hidupku. \u2736',let:false},
+   en:{lbl:'05 · Always There',ttl:'Always <em>There</em>',txt:'No matter how busy life gets, I genuinely hope you always stay happy, protected, and smiling. Because your smile is one of the most beautiful things I have ever known.',sig:'Thank you for existing in my life. \u2736',let:false}},
+  {id:{lbl:'06 · Surat Untukmu',ttl:'Eid <em>Mubarak,</em> Sayang',let:true,sal:'Untuk kamu yang selalu ada di pikiranku,',
+    body:['Setiap kali Lebaran tiba, selalu ada satu hal yang membuatku lebih bersyukur dari tahun sebelumnya \u2014 kehadiranmu. Bukan karena sesuatu yang besar atau dramatis, tapi justru karena hal-hal kecil yang mungkin kamu sendiri tidak sadari.','Cara kamu memperhatikan, bahkan ketika kamu pikir tidak ada yang melihat. Cara kamu mendengarkan dengan sungguh-sungguh, bukan sekadar mendengar. Cara kamu tetap ada bahkan di hari-hari yang terasa berat \u2014 bukan dengan kata-kata besar, tapi hanya dengan kehadiranmu yang hangat.','Aku tidak selalu pandai mengatakannya. Tapi di hari yang istimewa ini, aku ingin kamu tahu: kamu bukan sekadar orang yang aku sayangi. Kamu adalah alasan hari-hariku terasa lebih berwarna, lebih berarti.','Eid ini, aku tidak punya hadiah mewah. Yang aku punya hanya rasa ini \u2014 rasa syukur yang tulus, kasih sayang yang nyata, dan doa yang sungguh-sungguh agar kamu selalu dilindungi, selalu bahagia, dan selalu tahu bahwa kamu dicintai.','Selamat Hari Raya, sayang. Semoga setiap langkahmu selalu dipenuhi cahaya \u2014 dan semoga kamu tahu, aku selalu mendoakanmu.'],
+    cl:'Dengan segenap cinta dan ketulusan,',cn:'Selalu untukmu \uD83C\uDF19'},
+   en:{lbl:'06 · A Letter',ttl:'Eid <em>Mubarak,</em> Sayang',let:true,sal:'To you, who is always on my mind,',
+    body:['Every time Eid arrives, there is one thing that makes me more grateful than the year before \u2014 your presence. Not because of anything grand or dramatic, but because of the small things you might not even notice yourself.','The way you pay attention, even when you think no one is watching. The way you truly listen, not just hear. The way you stay even on the heavy days \u2014 not with grand words, but simply with your warm presence.','I am not always good at saying it. But on this special day, I want you to know: you are not just someone I care for. You are the reason my days feel more vivid, more meaningful.','This Eid, I have no grand gift to offer. What I have is this feeling \u2014 a sincere gratitude, a real love, and a genuine prayer that you are always protected, always happy, and always loved.','Happy Eid, sayang. May every step you take be filled with light \u2014 and may you always know that I am always praying for you.'],
+    cl:'With all my love and sincerity,',cn:'Always yours \uD83C\uDF19'}}
+];
+var ui={id:{p:'\u2190 Sebelumnya',n:'Berikutnya \u2192'},en:{p:'\u2190 Prev',n:'Next \u2192'}};
 
-  // ══════════════════════════════════════════
-  //  State
-  // ══════════════════════════════════════════
-  let current = 0;
-  let lang = 'id';
-  let animating = false;
-
-  const ui = {
-    id:{ prev:'← Sebelumnya', next:'Berikutnya →', footer:'Dibuat dengan perasaan yang tulus · Eid 2025 🌙' },
-    en:{ prev:'← Prev',       next:'Next →',       footer:'Made with genuine feelings · Eid 2025 🌙' }
-  };
-
-  // ══════════════════════════════════════════
-  //  Starfield
-  // ══════════════════════════════════════════
-  const canvas = document.getElementById('stars');
-  const ctx = canvas.getContext('2d');
-  let stars = [];
-  function resizeCanvas(){ canvas.width=window.innerWidth; canvas.height=window.innerHeight; }
-  function initStars(){
-    stars=[];
-    for(let i=0;i<160;i++) stars.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*1.4+0.2,speed:Math.random()*0.008+0.003,phase:Math.random()*Math.PI*2});
+function render(){
+  var s=S[cur][lang],h='';
+  h+='<div class="slide">';
+  h+='<div class="orn"><div class="ol"></div><span class="oi">\u2736</span><div class="or"></div></div>';
+  h+='<div class="lbl"><span class="snum">'+(cur+1)+'</span>'+s.lbl+'</div>';
+  h+='<h2>'+s.ttl+'</h2><div class="div"></div>';
+  if(s.let){
+    h+='<div class="frame"><div class="sal">'+s.sal+'</div><div class="lbody">';
+    for(var i=0;i<s.body.length;i++) h+='<p>'+s.body[i]+'</p>';
+    h+='</div><div class="lclos">'+s.cl+'<span>'+s.cn+'</span></div></div>';
+  } else {
+    h+='<div class="frame"><p class="body">'+s.txt+'</p>';
+    if(s.sig) h+='<div class="sig">'+s.sig+'</div>';
+    h+='</div>';
   }
-  function drawStars(t){
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    stars.forEach(s=>{
-      const a=0.15+0.5*(0.5+0.5*Math.sin(s.phase+t*s.speed));
-      ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
-      ctx.fillStyle=`rgba(245,237,224,${a})`; ctx.fill();
-    });
-    requestAnimationFrame(ts=>drawStars(ts/1000));
+  if(cur===0) h+='<div class="hint">swipe to navigate</div>';
+  h+='</div>';
+  document.getElementById('scene').innerHTML=h;
+  document.getElementById('wrap').scrollTop=0;
+
+  var d=document.getElementById('dots'); d.innerHTML='';
+  for(var j=0;j<S.length;j++){
+    var b=document.createElement('button');
+    b.className='dot'+(j===cur?' on':'');
+    (function(x){b.onclick=function(){go(x)}})(j);
+    d.appendChild(b);
   }
-  resizeCanvas(); initStars(); drawStars(0);
-  window.addEventListener('resize',()=>{ resizeCanvas(); initStars(); });
+  document.getElementById('pb').style.width=(((cur+1)/S.length)*100)+'%';
+  document.getElementById('pb2').innerHTML=ui[lang].p;
+  document.getElementById('nb').innerHTML=ui[lang].n;
+  document.getElementById('bID').className='lb'+(lang==='id'?' on':'');
+  document.getElementById('bEN').className='lb'+(lang==='en'?' on':'');
+}
 
-  // ── Petals ──
-  (function spawnPetals(){
-    for(let i=0;i<14;i++){
-      const el=document.createElement('div');
-      el.className='petal';
-      const size=Math.random()*5+4;
-      el.style.cssText=`left:${Math.random()*100}vw;width:${size}px;height:${size*1.6}px;background:var(--gold);animation-duration:${Math.random()*10+12}s;animation-delay:${Math.random()*12}s;`;
-      document.body.appendChild(el);
-    }
-  })();
+function go(i){cur=i;render()}
+function next(){go((cur+1)%S.length)}
+function prev(){go((cur-1+S.length)%S.length)}
+function setLang(l){lang=l;render()}
 
-  // ══════════════════════════════════════════
-  //  Build HTML
-  // ══════════════════════════════════════════
-  function buildSlideHTML(data, idx){
-    const s = data[lang];
-    const num = idx+1;
+var tx=0,ty=0,tt=0;
+document.addEventListener('touchstart',function(e){var t=e.touches[0];tx=t.clientX;ty=t.clientY;tt=Date.now()},{passive:true});
+document.addEventListener('touchend',function(e){
+  var t=e.changedTouches[0],dx=t.clientX-tx,dy=t.clientY-ty,dt=Date.now()-tt;
+  if(Math.abs(dx)>Math.abs(dy)&&Math.abs(dx)>44&&dt<380){if(dx<0)next();else prev();}
+},{passive:true});
 
-    if(s.isLetter){
-      const paras = s.letterBody.map(p=>`<p>${p}</p>`).join('');
-      return `
-        <div class="slide active">
-          <div class="slide-label"><span class="slide-number">${num}</span>${s.label}</div>
-          <h2 class="slide-title">${s.title}</h2>
-          <div class="divider"></div>
-          <div class="letter-wrap">
-            <div class="letter-scroll">
-              <div c
+document.addEventListener('touchstart',function(e){
+  var t=e.touches[0],el=document.createElement('div');
+  el.className='ripple';
+  el.style.cssText='width:60px;height:60px;left:'+(t.clientX-30)+'px;top:'+(t.clientY-30)+'px';
+  document.body.appendChild(el);
+  setTimeout(function(){if(el.parentNode)el.parentNode.removeChild(el)},520);
+},{passive:true});
+
+document.addEventListener('keydown',function(e){
+  if(e.key==='ArrowRight')next();
+  if(e.key==='ArrowLeft')prev();
+});
+
+(function(){
+  var cv=document.getElementById('c'),ctx=cv.getContext('2d'),W,H,P=[];
+  function sz(){W=cv.width=window.innerWidth;H=cv.height=window.innerHeight}
+  function init(){P=[];var n=Math.min(45,Math.floor(W*H/18000));for(var i=0;i<n;i++)P.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.1+.3,vx:(Math.random()-.5)*.15,vy:-Math.random()*.2-.05,l:Math.random()})}
+  function tick(){ctx.clearRect(0,0,W,H);for(var i=0;i<P.length;i++){var p=P[i];p.x+=p.vx;p.y+=p.vy;p.l+=.004;var a=Math.sin(p.l*Math.PI)*.55;if(a<0||p.y<-10){p.x=Math.random()*W;p.y=H+10;p.l=0;}ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle='rgba(201,168,76,'+Math.max(0,a)+')';ctx.fill();}requestAnimationFrame(tick);}
+  sz();init();tick();
+  window.addEventListener('resize',function(){sz();init();});
+})();
+
+render();
+</script>
+</body>
+</html>
